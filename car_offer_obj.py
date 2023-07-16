@@ -1,20 +1,21 @@
 import datetime
 
 class CarOffer:
-    def __init__(self, ID, WIN, name, prices, URL, description, kilometers, specifications, location, datePublished, isForSale, fuel, transmision):
+    def __init__(self, ID, WIN, name, prices, year, URL, kilometers, category, location, datePublished, isForSale, fuel, transmision, visited):
         self._ID = ID
         self._WIN = WIN
         self._name = name
         self._prices = prices
+        self._year = year
         self._URL = URL
-        self._description = description
         self._kilometers = kilometers
-        self._specifications = specifications
+        self._category = category
         self._location = location
         self._datePublished = datePublished
         self._isForSale = isForSale
         self._fuel = fuel
         self._transmision = transmision
+        self._visited = visited
 
     # Getterss
     def get_id(self):
@@ -27,12 +28,12 @@ class CarOffer:
         return self._prices
     def get_URL(self):
         return self._URL
-    def get_description(self):
-        return self._description
+    def get_year(self):
+        return self._year
     def get_kilometers(self):
         return self._kilometers
-    def get_specifications(self):
-        return self._specifications
+    def get_category(self):
+        return self._category
     def get_location(self):
         return self._location
     def get_datePublished(self):
@@ -43,6 +44,8 @@ class CarOffer:
         return self._fuel
     def get_transmision(self):
         return self._transmision
+    def get_visited(self):
+        return self._visited
     
 
     # Setters
@@ -52,21 +55,24 @@ class CarOffer:
         self._prices.append(value)
     def set_kilometers(self, value):
         self._kilometers = value
+    def set_visited(self, value):
+        self._visited = value
 
     # Properties for attributes
     id = property(get_id)
     WIN = property(get_WIN)
     name = property(get_name)
     prices = property(get_prices, set_prices)
+    year = property(get_year)
     URL = property(get_URL)
-    description = property(get_description)
     kilometers = property(get_kilometers, set_kilometers)
-    specifications = property(get_specifications)
+    category = property(get_category)
     location = property(get_location)
     datePublished = property(get_datePublished)
     isForSale = property(get_isForSale, set_isForSale)
     fuel = property(get_fuel)
     transmision = property(get_transmision)
+    visited = property(get_visited, set_visited)
 
     # Set publication days
     def count_car_offers_today(car_offers):
