@@ -1,14 +1,22 @@
 import requests
+import datetime
 import time
 from bs4 import BeautifulSoup
-import datetime
 import re
+import json
 from car_offer_obj import CarOffer
 
 AUTO_BG_URL = 'https://www.auto.bg/obiavi/avtomobili-dzhipove/page/'
-MOBILE_URL = 'https://www.mobile.bg/pcgi/mobile.cgi?act=3&amp;slink=szoboa&amp;f1='
+MOBILE_URL = 'https://www.mobile.bg/pcgi/mobile.cgi?act=3&amp;slink=t6rf40;f1='
 START_NUMBER = 1
+SOURCE = "MOBILE.BG"
 HAS_CARS = True
+
+# Get the current date
+current_date = datetime.date.today()
+formatted_date = current_date.strftime("%d/%m/%Y")
+
+file_name = 'car_offers_' + formatted_date + '.json'
 
 car_offers = []  # List to store CarOffer objects
 
@@ -21,7 +29,8 @@ while HAS_CARS:
         print(f"Request {START_NUMBER}: Success")
 
         soup = BeautifulSoup(page_response.content, 'lxml')
-        cars = soup.find_all('table', class_ = 'tablereset', style='width:660px; margin-bottom:0px; border-top:#008FC6 1px solid; background:url(//www.mobile.bg/images/picturess/top_bg.gif); background-position:bottom; background-repeat:repeat-x;')
+        # cars = soup.find_all('table', class_ = 'tablereset', style='width:660px; margin-bottom:0px; border-top:#008FC6 1px solid; background:url(//www.mobile.bg/images/picturess/vip_bg.gif); background-position:bottom; background-repeat:repeat-x;')
+        cars = soup.find_all('table', class_ = 'tablereset', style='width:660px; margin-bottom:0px; border-top:#008FC6 1px solid; background:url(//www.mobile.bg/images/picturess/top_bg.gif); background-position:bottom; background-repeat:repeat-x;') 
         for index, car in enumerate(cars):
             car_title = car.find('a', class_ = 'mmm')
             # car_name = car_title.text
@@ -70,7 +79,7 @@ while HAS_CARS:
             # Create CarOffer object
             car_offer = CarOffer(
                 ID=car_ID,
-                WIN=None,
+                VIN=None,
                 name=car_name,
                 prices=[car_price],
                 year=year,
@@ -82,18 +91,23 @@ while HAS_CARS:
                 isForSale=True,
                 fuel=fuel,
                 transmision=transmision,
-                visited=visited
+                visited=visited,
+                ps=0, # TODO find ps
+                source=SOURCE
             )
 
             print(car_offer)
             
             car_offers.append(car_offer)  # Add the CarOffer object to the list
-            break
-
+        time.sleep(3)
     else:
         HAS_CARS = False
         print(f"Request {START_NUMBER}: Failed")
-    
     START_NUMBER += 1
     
-    break
+    if (START_NUMBER == 152):
+        HAS_CARS = False
+    
+# Write the list of CarOffer objects to a JSON file
+with open(file_name, 'w', encoding='utf-8') as json_file:
+    json.dump([car.__dict__ for car in car_offers], json_file, indent=4, ensure_ascii=False)

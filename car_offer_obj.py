@@ -1,9 +1,9 @@
 import datetime
 
 class CarOffer:
-    def __init__(self, ID, WIN, name, prices, year, URL, kilometers, category, location, datePublished, isForSale, fuel, transmision, visited):
+    def __init__(self, ID, VIN, name, prices, year, URL, kilometers, category, location, datePublished, isForSale, fuel, transmision, visited, ps, source):
         self._ID = ID
-        self._WIN = WIN
+        self._WIN = VIN
         self._name = name
         self._prices = prices
         self._year = year
@@ -13,15 +13,17 @@ class CarOffer:
         self._location = location
         self._datePublished = datePublished
         self._isForSale = isForSale
-        self._fuel = fuel
-        self._transmision = transmision
+        self._fuel = fuel 
+        self._transmision = transmision 
         self._visited = visited
+        self._ps = ps
+        self._source = source
 
     # Getterss
     def get_id(self):
         return self._ID
-    def get_WIN(self):
-        return self._WIN
+    def get_VIN(self):
+        return self._VIN
     def get_name(self):
         return self._name
     def get_prices(self):
@@ -46,6 +48,10 @@ class CarOffer:
         return self._transmision
     def get_visited(self):
         return self._visited
+    def get_ps(self):
+        return self._ps
+    def get_source(self):
+        return self._source
     
 
     # Setters
@@ -60,7 +66,7 @@ class CarOffer:
 
     # Properties for attributes
     id = property(get_id)
-    WIN = property(get_WIN)
+    VIN = property(get_VIN)
     name = property(get_name)
     prices = property(get_prices, set_prices)
     year = property(get_year)
@@ -73,6 +79,8 @@ class CarOffer:
     fuel = property(get_fuel)
     transmision = property(get_transmision)
     visited = property(get_visited, set_visited)
+    ps = property(get_ps)
+    source = property(get_source)
 
     # Set publication days
     def count_car_offers_today(car_offers):
