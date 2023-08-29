@@ -1,9 +1,9 @@
 import datetime
 
 class CarOffer:
-    def __init__(self, ID, VIN, name, prices, year, URL, kilometers, category, location, datePublished, isForSale, fuel, transmision, visited, ps, source):
+    def __init__(self, ID, VIN, name, prices, year, URL, kilometers, category, location, datePublished, isForSale, fuel, transmision, visited, ps, source, lastChange):
         self._ID = ID
-        self._WIN = VIN
+        self._VIN = VIN
         self._name = name
         self._prices = prices
         self._year = year
@@ -18,6 +18,7 @@ class CarOffer:
         self._visited = visited
         self._ps = ps
         self._source = source
+        self._lastChange = lastChange
 
     # Getterss
     def get_id(self):
@@ -52,6 +53,8 @@ class CarOffer:
         return self._ps
     def get_source(self):
         return self._source
+    def get_lastChange(self):
+        return self._lastChange
     
 
     # Setters
@@ -63,6 +66,8 @@ class CarOffer:
         self._kilometers = value
     def set_visited(self, value):
         self._visited = value
+    def set_lastChange(self, value):
+        self._lastChange = value
 
     # Properties for attributes
     id = property(get_id)
@@ -81,7 +86,27 @@ class CarOffer:
     visited = property(get_visited, set_visited)
     ps = property(get_ps)
     source = property(get_source)
-
+    lastChange = property(get_lastChange, set_lastChange)
+    def as_dict(self):
+        return {
+            "ID": self._ID,
+            "VIN": self._VIN,
+            "name": self._name,
+            "prices": self._prices,
+            "year": self._year,
+            "URL": self._URL,
+            "kilometers": self._kilometers,
+            "category": self._category,
+            "location": self._location,
+            "datePublished": self._datePublished,
+            "isForSale": self._isForSale,
+            "fuel": self._fuel,
+            "transmission": self._transmision,
+            "visited": self._visited,
+            "ps": self._ps,
+            "source": self._source,
+            "lastChange": self._lastChange
+        }
     # Set publication days
     def count_car_offers_today(car_offers):
         today = datetime.date.today()

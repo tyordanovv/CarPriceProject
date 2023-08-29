@@ -1,6 +1,7 @@
 import requests
 import datetime
 import locale
+import json
 from bs4 import BeautifulSoup
 from car_offer_obj import CarOffer
 from car_constants import CarConstants
@@ -8,6 +9,7 @@ from car_constants import CarConstants
 url = 'https://www.auto.bg/obiavi/avtomobili-dzhipove/page/2'
 HAS_CARS = True
 SOURCE = "AUTO.BG"
+CURRENT_DATE = datetime.date.today()
 
 
 def formatCarFuel(car_fuel):
@@ -83,29 +85,50 @@ def extract_car_info(html):
         car_name = car_soup.find('td', class_='secColumn').text.strip()
         print(car_name)
 
-        car_price = car_soup.find('th', string='Цена').find_next_sibling('td').text.strip()
+        try:
+            car_price = car_soup.find('th', string='Цена').find_next_sibling('td').text.strip()
+        except AttributeError:
+            car_price = "N/A"
         print(car_price)
 
-        car_category = car_soup.find('th', string='Тип').find_next_sibling('td').text.strip()
-        car_category = formatCarCategory(car_category)
+        try:
+            car_category = car_soup.find('th', string='Тип').find_next_sibling('td').text.strip()
+            car_category = formatCarCategory(car_category)
+        except AttributeError:
+            car_category = "N/A"
         print(car_category)
 
-        car_year = car_soup.find('th', string='Произведено').find_next_sibling('td').text.strip()
-        car_year = formatCarYear(car_year)
+        try:
+            car_year = car_soup.find('th', string='Произведено').find_next_sibling('td').text.strip()
+            car_year = formatCarYear(car_year)
+        except AttributeError:
+            car_year = "N/A"
         print(car_year)
 
-        car_ps = car_soup.find('th', string='Мощност[к.с.]').find_next_sibling('td').text.strip()
+        try:
+            car_ps = car_soup.find('th', string='Мощност[к.с.]').find_next_sibling('td').text.strip()
+        except AttributeError:
+            car_ps = "N/A" 
         print(car_ps)
 
-        car_fuel = car_soup.find('th', string='Тип двигател').find_next_sibling('td').text.strip()
-        car_fuel = formatCarFuel(car_fuel)
+        try:
+            car_fuel = car_soup.find('th', string='Тип двигател').find_next_sibling('td').text.strip()
+            car_fuel = formatCarFuel(car_fuel)
+        except AttributeError:
+            car_fuel = "N/A" 
         print(car_fuel)
 
-        car_transmission = car_soup.find('th', string='Скоростна кутия').find_next_sibling('td').text.strip()
-        car_transmission = formatCarTransmition(car_transmission)
+        try:
+            car_transmission = car_soup.find('th', string='Скоростна кутия').find_next_sibling('td').text.strip()
+            car_transmission = formatCarTransmition(car_transmission)
+        except AttributeError:
+            car_transmission = "N/A" 
         print(car_transmission)
 
-        car_kilometers = car_soup.find('th', string='Пробег').find_next_sibling('td').text.strip()
+        try:
+            car_kilometers = car_soup.find('th', string='Пробег').find_next_sibling('td').text.strip()
+        except AttributeError:
+            car_kilometers = "N/A" 
         print(car_kilometers)
 
         car_offer = CarOffer(
@@ -124,9 +147,20 @@ def extract_car_info(html):
             transmision=car_transmission,
             visited=None, 
             ps=car_ps,
-            source=SOURCE
+            source=SOURCE,
+            lastChange=CURRENT_DATE
         )
+        # Convert the CarOffer object to a dictionary
+        car_offer_dict = car_offer.as_dict()
 
+        # Print the dictionary
+        print(car_offer_dict)
+
+        # Convert the CarOffer dictionary to JSON format
+        car_offer_json = json.dumps(car_offer_dict, indent=4)
+
+        # Print the JSON format
+        print(car_offer_json)
         car_offers.append(car_offer)
         break
 
@@ -137,6 +171,7 @@ while HAS_CARS:
 
     if response.status_code == 200:
         extract_car_info(response.content)
+
     else:
         print(f"Failed to fetch the page. Status code: {response.status_code}")
         HAS_CARS = False
